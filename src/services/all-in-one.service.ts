@@ -5,13 +5,13 @@ class AllInOneService {
 		return http.post(`https://all-in-one-system-cfe0c681a225.herokuapp.com/user/sign-in`, data);
 	}
 	static create(data: any) {
-		return http.post('https://all-in-one-system-cfe0c681a225.herokuapp.com/', data);
+		return http.post('https://all-in-one-system-cfe0c681a225.herokuapp.com/user/sign-up', data);
 	}
-	static update(data: any) {
-		return http.patch(`/content`, data);
+    static getUserByToken(data: any) {
+		return http.get(`https://all-in-one-system-cfe0c681a225.herokuapp.com/user/token/${data}`);
 	}
 	static delete(data: any) {
-		return http.delete(`/content/${data}`);
+		return http.delete(`//${data}`);
 	}
 
 }

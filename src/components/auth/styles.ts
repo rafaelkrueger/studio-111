@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 
+
 export const AuthContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -26,7 +27,7 @@ export const AuthContainerLeftLogo = styled.img`
     margin-left:20%;
     @media (max-width:600px) {
         margin-top: 20%;
-        margin-bottom: 25%;
+        margin-bottom: 20%;
         border-radius: 20px;
         width: 100%;
         margin-left:0%;
@@ -77,7 +78,7 @@ export const AuthContainerLeftButton = styled.button`
     color:white;
     font-size: 13pt;
     @media (max-width:600px) {
-        margin-top: 20%;
+        margin-top: 15%;
     }
 
     &:hover{
@@ -92,6 +93,10 @@ export const AuthContainerLeftForgotPassword = styled.p`
 `;
 
 export const AuthContainerLeftForgotSignup = styled.p`
+    @media (max-width:600px) {
+        margin-bottom: 10%;
+    }
+
 `;
 
 export const AuthContainerLeftForgotSignupLink = styled.strong`
@@ -116,3 +121,4 @@ export const AuthContainerRightImage = styled.img`
         display: none;
     }
 `;
+

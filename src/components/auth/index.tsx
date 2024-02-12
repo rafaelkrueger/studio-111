@@ -5,9 +5,17 @@ import LogoImage from '../../images/logo-auth-no-bg.png';
 import LogoImageResponsive from '../../images/logo-auth.jpeg';
 import { useMutation } from '@tanstack/react-query';
 import AllInOneService from '../../services/all-in-one.service.ts';
+import { useLocalStorage } from '../../hooks/useLocalStorage.ts';
+import { useNavigate } from 'react-router-dom';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { LoadingIcon } from '../../global.styles.ts';
+import { AlertAdapter } from '../../global.components.tsx';
 
 const Auth: React.FC = () => {
-  const [isNewUser, setIsNewUser] = useState<boolean>(false)
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [token, setToken] = useLocalStorage('accessToken', null)
+  const navigate = useNavigate()
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -30,12 +38,34 @@ const Auth: React.FC = () => {
   ]
 
   const getUser = () =>{
+    setLoading(true);
     AllInOneService.get(user).then((res)=>{
-      console.log(res.data)
+      if(res.data){
+        setLoading(false);
+        setToken(res.data);
+        navigate('/dashboard');
+      }
     }).catch((err)=>{
+      AlertAdapter('Usuário não encontrado', 'error');
+      setLoading(false);
       console.log(err)
     })
   }
+
+  const insertUser = () =>{
+    setLoading(true)
+    AllInOneService.create(user).then((res)=>{
+      if(res.data){
+        setLoading(false);
+        setToken(res.data);
+        navigate('/dashboard');
+      }
+    }).catch((err)=>{
+      setLoading(false);
+      console.log(err)
+    })
+  }
+
 
   return (
     <AuthContainer>
@@ -50,9 +80,9 @@ const Auth: React.FC = () => {
                   setUser({ ...user, email: e.target.value });
                 } } /><AuthContainerLeftLabelPassword>
                 Senha
-          </AuthContainerLeftLabelPassword><AuthContainerLeftPassword onChange={(e: { target: { value: any; }; }) => {
+          </AuthContainerLeftLabelPassword><AuthContainerLeftPassword  type="password" onChange={(e: { target: { value: any; }; }) => {
             setUser({ ...user, password: e.target.value });
-          } } /><AuthContainerLeftButton onClick={getUser}>Entrar</AuthContainerLeftButton><div style={{ textAlign: 'center' }}>
+          } } /><AuthContainerLeftButton onClick={getUser}>{loading?<LoadingIcon size={26}/>:'Entrar'}</AuthContainerLeftButton><div style={{ textAlign: 'center' }}>
             <AuthContainerLeftForgotSignup>Não tem uma conta ainda? <AuthContainerLeftForgotSignupLink onClick={()=>{setIsNewUser(!isNewUser)}}>Registre-se</AuthContainerLeftForgotSignupLink></AuthContainerLeftForgotSignup>
             <AuthContainerLeftForgotPassword>Esqueci minha senha</AuthContainerLeftForgotPassword>
           </div>
@@ -65,14 +95,14 @@ const Auth: React.FC = () => {
           </AuthContainerLeftLabelInput>
           <AuthContainerLeftInput
                 onChange={(e: { target: { value: any; }; }) => {
-                  setUser({ ...user, email: e.target.value });
+                  setUser({ ...user, name: e.target.value });
           }}/>
           <AuthContainerLeftLabelInput style={{marginTop:'-5%'}}>
               Número
           </AuthContainerLeftLabelInput>
           <AuthContainerLeftInput
                 onChange={(e: { target: { value: any; }; }) => {
-                  setUser({ ...user, email: e.target.value });
+                  setUser({ ...user, cellphone: e.target.value });
           }}/>
           <AuthContainerLeftLabelInput style={{marginTop:'-5%'}}>
               Email
@@ -84,7 +114,7 @@ const Auth: React.FC = () => {
           <AuthContainerLeftLabelPassword style={{marginTop:'-5%'}}>
                 Senha
           </AuthContainerLeftLabelPassword>
-          <AuthContainerLeftPassword onChange={(e: { target: { value: any; }; }) => {
+          <AuthContainerLeftPassword type="password" onChange={(e: { target: { value: any; }; }) => {
             setUser({ ...user, password: e.target.value });
           } } />
           <div style={{display:'flex', marginTop:'1%'}}>
@@ -118,7 +148,7 @@ const Auth: React.FC = () => {
             </div>
           </div>
 
-          <AuthContainerLeftButton onClick={getUser} style={{marginTop:window.outerWidth > 600? '5%': '10%'}}>Registre-se</AuthContainerLeftButton>
+          <AuthContainerLeftButton onClick={insertUser} style={{marginTop:window.outerWidth > 600? '5%': '10%'}}>{loading?<LoadingIcon size={23}/>:'Registre-se'}</AuthContainerLeftButton>
           <div style={{ textAlign: 'center' }}>
             <AuthContainerLeftForgotSignup>Já tem uma conta? <AuthContainerLeftForgotSignupLink onClick={()=>{setIsNewUser(!isNewUser)}}>Entre</AuthContainerLeftForgotSignupLink></AuthContainerLeftForgotSignup>
           </div>
